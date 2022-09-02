@@ -1,5 +1,7 @@
 const { getAllUsers, addToUsers} = require('../model/database');
 
+const UserSchema = require('../model/user.model');
+
 const db = [...getAllUsers()]
 
 function handleLoginUser(req, res) {
@@ -29,7 +31,7 @@ function handleLoginUser(req, res) {
 }
 
 
-function handleRegisterUser(req, res) {
+async function handleRegisterUser(req, res) {
   // check if fields are empty
   const data = {...req.body}
   if (!data.fullName || !data.email || !data.phone || !data.gender || !data.password) {
@@ -46,26 +48,39 @@ function handleRegisterUser(req, res) {
       return item;
     }
   });
-  
-  if (!isValid) {
-    addToUsers(data);
+
+  try {
+    
+    const newUser = new UserSchema(data);
+    const userData = await newUser.save();
     res.status(201).json({
       message: 'Registration successful!',
-      data,
+      data: userData,
       success: true,
       statusCode: 201
     });
     return;
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      message: 'User already exist, proceed to login',
+      success: false,
+      statusCode: 400,
+      error: error.message
+    })
+    
   }
+  
+ 
 
-  res.status(400).json({
-    message: 'User already exist, proceed to login',
-    success: false,
-    statusCode: 400
-  })
+}
+
+function handleForgotPassword(req, res) {
+
 }
 
 module.exports = {
   handleLoginUser,
-  handleRegisterUser
+  handleRegisterUser,
+  handleForgotPassword
 }
