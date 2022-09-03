@@ -32,27 +32,12 @@ function handleLoginUser(req, res) {
 
 
 async function handleRegisterUser(req, res) {
-  // check if fields are empty
   const data = {...req.body}
-  if (!data.fullName || !data.email || !data.phone || !data.gender || !data.password) {
-    res.status(400).json({
-      message: 'All fields are required',
-      success: false,
-      statusCode: 400
-    })
-  }
-
-// check if account exist
-  const isValid = db.find(item => {
-    if(item.phone === data.phone || item.email === data.email) {
-      return item;
-    }
-  });
 
   try {
-    
-    const newUser = new UserSchema(data);
-    const userData = await newUser.save();
+    //creating a new user (Create)
+    const newUser = new UserSchema(data); //Instantiating class
+    const userData = await newUser.save(); // Saves to the users collectn
     res.status(201).json({
       message: 'Registration successful!',
       data: userData,
@@ -63,15 +48,13 @@ async function handleRegisterUser(req, res) {
   } catch (error) {
     console.log(error)
     res.status(400).json({
-      message: 'User already exist, proceed to login',
+      message: 'Something went wrong!',
       success: false,
       statusCode: 400,
       error: error.message
     })
     
   }
-  
- 
 
 }
 

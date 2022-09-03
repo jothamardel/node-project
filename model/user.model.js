@@ -16,7 +16,7 @@ const userSchema = new Schema({
   phone: {
     type: String,
     required: true,
-    unique: String
+    unique: true
   },
   gender: {
     type: String,
@@ -29,3 +29,5 @@ const userSchema = new Schema({
 })
 
 module.exports = model('user', userSchema);
+
+// CRUD - Create, Read, Update, Delete
